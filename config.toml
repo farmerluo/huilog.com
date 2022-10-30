@@ -17,7 +17,7 @@ languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"
 title = "阿辉的博客"
 theme = "hugo-tranquilpeak-theme"
-disqusShortname = "hugo-tranquilpeak-theme"
+disqusShortname = "阿辉"
 # googleAnalytics = "UA-123-45"
 paginate = 7
 canonifyurls = true
@@ -52,7 +52,7 @@ canonifyurls = true
   gravatarEmail = "farmer.luo@qq.com"
   # Your profile picture
   # Overwritten by your gravatar image if `author.gravatarEmail` is filled
-  picture = "https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png"
+  picture = "/wp-content/uploads/2012/07/icon.png"
   # Your Twitter username without the @. E.g : thibaudlepretre
   # twitter = "thibaudlepretre"
   # Your google plus profile id. E.g : +ThibaudLepretre or 114625208755123718311
@@ -92,7 +92,7 @@ canonifyurls = true
   pre = "<i class=\"sidebar-button-icon fas fa-lg fa-question\" aria-hidden=\"true\"></i>"
   url = "/#about"
 
-[[menu.links]]
+[[menu.misc]]
   weight = 1
   identifier = "github"
   name = "GitHub"
@@ -100,7 +100,7 @@ canonifyurls = true
   url = "https://github.com/farmerluo"
 
 [[menu.misc]]
-  weight = 1
+  weight = 2
   identifier = "rss"
   name = "RSS"
   pre = "<i class=\"sidebar-button-icon fas fa-lg fa-rss\" aria-hidden=\"true\"></i>"
@@ -138,7 +138,7 @@ canonifyurls = true
   #  keywords = ["development", "next-gen"]
 
   # Hide sidebar on all article page to let article take full width to improve reading, and enjoy wide images and cover images. (true: enable, false: disable)
-  clearReading = true
+  clearReading = false
 
   # Define categories will create hierarchy between parents: `categories = ["foo", "bar"]` will consider "bar" a sub-category of "foo".
   # If false it will flat categories.
@@ -164,7 +164,7 @@ canonifyurls = true
   #    large sidebar is swiped on all lower screens
   # 5: Display header bar on all screens and large sidebar is swiped on large screen
   # 6: Display header bar on all screens and medium sidebar is swiped
-  sidebarBehavior = 1
+  sidebarBehavior = 2
 
   # Customize link of author avatar in sidebar
   #  [params.sidebar.profile]
@@ -182,7 +182,7 @@ canonifyurls = true
   coverImage = "images/cover.jpg"
 
   # Display an image gallery at the end of a post which have photos variables (false: disabled, true: enabled)
-  imageGallery = true
+  imageGallery = false
 
   # Display thumbnail image of each post on index pages (false: disabled, true: enabled)
   thumbnailImage = true
@@ -205,76 +205,91 @@ canonifyurls = true
   # they have to be referred from static root. Example
   #  [[params.customCSS]]
   #    href = "css/mystyle.css"
+  [[params.customCSS]]
+    href = "/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+
+  [[params.customCSS]]
+    href = "/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css"
 
   # Custom JS. Put here your custom JS files. They are loaded after the theme JS;
   # they have to be referred from static root. Example
   #  [[params.customJS]]
   #     src = "js/myscript.js"
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"
     integrity = "sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/go.min.js"
     integrity = "sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/http.min.js"
     integrity = "sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/less.min.js"
     integrity = "sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"
     integrity = "sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"
     integrity = "sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"
     integrity = "sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"
     integrity = "sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"
     integrity = "sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg=="
     crossorigin = "anonymous"
     async = true
     defer = true
 
   [[params.customJS]]
-    src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"
+    # src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"
+    src = "/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"
     integrity = "sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw=="
     crossorigin = "anonymous"
     async = true
@@ -342,8 +357,8 @@ canonifyurls = true
   # --------------
   [params.comment]
     [params.comment.disqus]
-      enable = true
-      shortname = "hugo-tranquilpeak-theme"
+      enable = false
+      shortname = "阿辉"
     [params.comment.gitalk]
       enable = false
       # clientId =
@@ -369,12 +384,12 @@ canonifyurls = true
   #  class: st-search-show-outputs
   [params.header.rightLink]
     class = ""
-    icon = ""
+    icon = "/wp-content/uploads/2012/07/icon.png"
     url = "/#about"
 
   # --------------------
   # Footer configuration
   # --------------------
   # Customize copyright value "© 2017 <CUSTOMIZATION>. All Rights Reserved"
-  #  [params.footer]
-  #    copyright = "<a href=\"https://github.com/kakawait\">kakawait</a>"
+  [params.footer]
+    copyright = "<a href=\"http://www.miitbeian.gov.cn/\">沪ICP备15005553号-1</a>阿辉的博客"
