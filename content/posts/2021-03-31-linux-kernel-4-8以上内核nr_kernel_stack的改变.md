@@ -3,16 +3,16 @@ title: linux kernel 4.8以上内核NR_KERNEL_STACK的改变
 author: 阿辉
 date: 2021-03-31T09:39:13+00:00
 categories:
-- linux系统
-- kernel
+- Linux
+- Kernel
 tags:
 - kubernetes
-- kernel
-- linux系统
+- Linux
+- Kernel
 keywords:
 - kubernetes
-- kernel
-- linux系统
+- Linux
+- Kernel
 comments: true
 showTags: true
 showPagination: true

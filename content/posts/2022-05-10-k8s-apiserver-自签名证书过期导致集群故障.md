@@ -3,13 +3,13 @@ title: k8s apiserver 自签名证书过期导致集群故障
 author: 阿辉
 date: 2022-05-10T15:46:38+00:00
 categories:
-- kubernetes
+- Kubernetes
 - ApiServer
 tags:
-- kubernetes
+- Kubernetes
 - ApiServer
 keywords:
-- kubernetes
+- Kubernetes
 - ApiServer
 comments: true
 showTags: true

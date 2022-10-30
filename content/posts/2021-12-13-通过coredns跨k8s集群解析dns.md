@@ -3,13 +3,13 @@ title: 通过coredns跨k8s集群解析DNS
 author: 阿辉
 date: 2021-12-13T11:02:05+00:00
 categories:
-- kubernetes
+- Kubernetes
 - Coredns
 tags:
-- kubernetes
+- Kubernetes
 - Coredns
 keywords:
-- kubernetes
+- Kubernetes
 - Coredns
 comments: true
 showTags: true

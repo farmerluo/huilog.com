@@ -3,13 +3,13 @@ title: AWS VPC CNI路由分析
 author: 阿辉
 date: 2022-05-12T18:27:58+00:00
 categories:
-- kubernetes
+- Kubernetes
 - CNI
 tags:
-- kubernetes
+- Kubernetes
 - CNI
 keywords:
-- kubernetes
+- Kubernetes
 - CNI
 comments: true
 showTags: true

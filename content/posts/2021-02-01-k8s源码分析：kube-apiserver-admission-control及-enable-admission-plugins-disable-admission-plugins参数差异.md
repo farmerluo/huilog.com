@@ -3,14 +3,14 @@ title: k8s源码分析：kube-apiserver –admission-control及–enable-admissi
 author: 阿辉
 date: 2021-02-01T10:26:49+00:00
 categories:
-- kubernetes
-- apiserver
+- Kubernetes
+- ApiServer
 tags:
-- kubernetes
-- apiserver
+- Kubernetes
+- ApiServer
 keywords:
-- kubernetes
-- apiserver
+- Kubernetes
+- ApiServer
 comments: true
 showTags: true
 showPagination: true

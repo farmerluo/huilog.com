@@ -3,11 +3,11 @@ title: k8s inotify max_user_watches不够导致kubelet启动失败
 author: 阿辉
 date: 2022-06-05T09:53:14+00:00
 categories:
-- kubernetes
+- Kubernetes
 tags:
-- kubernetes
+- Kubernetes
 keywords:
-- kubernetes
+- Kubernetes
 comments: true
 showTags: true
 showPagination: true

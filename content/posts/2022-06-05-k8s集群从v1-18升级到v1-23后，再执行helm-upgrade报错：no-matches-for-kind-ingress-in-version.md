@@ -3,11 +3,11 @@ title: k8s集群从v1.18升级到v1.23后，再执行helm upgrade报错：no mat
 author: 阿辉
 date: 2022-06-05T09:53:56+00:00
 categories:
-- kubernetes
+- Kubernetes
 tags:
-- kubernetes
+- Kubernetes
 keywords:
-- kubernetes
+- Kubernetes
 comments: true
 showTags: true
 showPagination: true
