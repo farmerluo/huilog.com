@@ -1,0 +1,82 @@
+---
+title: '关于activemq启动失败Failed to start Apache ActiveMQ ([localhost, null], java.io.IOException: Detected missing/corrupt journal files referenced by:[0:ExceptionDLQ.Activit yResultPostProcess] 10 messages affected.)的处理'
+author: 阿辉
+date: 2018-06-11T11:32:29+00:00
+categories:
+- Activemq
+tags:
+- Activemq
+keywords:
+- Activemq
+comments: true
+showTags: true
+showPagination: true
+showSocial: false
+showDate: true
+showMeta: true
+---
+一个跑了满久的activemq停止后再启动就自动退出了，查看日志有以下报错：
+```
+2018-06-11 17:54:21,483 | WARN  | Some journal files are missing: [17496, 17495, 17494, 11811, 11807, 11793] | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 17:54:21,704 | ERROR | [0:ExceptionDLQ.ActivityResultPostProcess] references corrupt locations. 10 messages affected. | org.apache.activemq.store.kahadb.MessageDatabase | m
+ain
+2018-06-11 17:54:21,706 | ERROR | Failed to start Apache ActiveMQ ([localhost, null], java.io.IOException: Detected missing/corrupt journal files referenced by:[0:ExceptionDLQ.Activit
+yResultPostProcess] 10 messages affected.) | org.apache.activemq.broker.BrokerService | main
+2018-06-11 17:54:21,711 | INFO  | Apache ActiveMQ 5.13.3 (localhost, null) is shutting down | org.apache.activemq.broker.BrokerService | main
+2018-06-11 17:54:21,715 | INFO  | Connector openwire stopped | org.apache.activemq.broker.TransportConnector | main
+2018-06-11 17:54:21,718 | INFO  | Connector amqp stopped | org.apache.activemq.broker.TransportConnector | main
+2018-06-11 17:54:21,721 | INFO  | Connector stomp stopped | org.apache.activemq.broker.TransportConnector | main
+2018-06-11 17:54:21,724 | INFO  | Connector mqtt stopped | org.apache.activemq.broker.TransportConnector | main
+2018-06-11 17:54:21,727 | INFO  | Connector ws stopped | org.apache.activemq.broker.TransportConnector | main
+```
+
+解决方法：
+
+把conf/activemq.xml文件内以下配置从：
+```xml
+        <persistenceadapter>
+            <kahadb directory="${activemq.data}/kahadb"></kahadb>
+        </persistenceadapter>
+```
+改成：
+```xml
+        <persistenceadapter>
+            <kahadb directory="${activemq.data}/kahadb"
+                    ignoreMissingJournalfiles="true"
+                    checkForCorruptJournalFiles="true"
+                    checksumJournalFiles="true"></kahadb>
+        </persistenceadapter>
+```
+保存后退出。
+
+<!--more-->
+
+相关配置的解释：
+
+ignoreMissingJournalfiles 	默认：false 	忽略丢失的消息文件，false，当丢失了消息文件，启动异常
+checkForCorruptJournalFiles 	默认：false 	检查消息文件是否损坏，true，检查发现损坏会尝试修复
+checksumJournalFiles 	默认：false 	产生一个checksum，以便能够检测journal文件是否损坏。
+
+AMQ可正常启动，可以看到如下日志：
+```
+2018-06-11 18:03:46,224 | INFO  | KahaDB is version 6 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,367 | INFO  | Recovering from the journal @19584:19615405 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,369 | INFO  | Recovery replayed 1 operations from the journal in 0.092 seconds. | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,425 | WARN  | Some journal files are missing: [17496, 17495, 17494, 11811, 11807, 11793] | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,646 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-14-16305-1524666866071-1:1:40:1:1 at corrupt location: 11793:26365268 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,648 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-13-32764-1524672923835-1:1:170:1:1 at corrupt location: 11807:27766123 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,650 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-14-25005-1524672922167-1:1:164:1:2 at corrupt location: 11807:28547936 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,653 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-13-32764-1524672923835-1:1:98:1:1 at corrupt location: 11807:29093398 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,655 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-14-25005-1524672922167-1:1:163:1:1 at corrupt location: 11807:30160163 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,657 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-13-32764-1524672923835-1:1:98:1:3 at corrupt location: 11807:31199074 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,659 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-12-8588-1524672398221-1:1:162:1:1 at corrupt location: 11811:25770150 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,661 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-14-1716-1527773539665-1:1:88:1:1 at corrupt location: 17494:17098861 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,663 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-12-1316-1527773206992-1:1:28:1:1 at corrupt location: 17494:18217707 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,664 | INFO  | [0:ExceptionDLQ.ActivityResultPostProcess] dropped: ID:sh-saas-o2o-o2oweb-online-11-21373-1527773207600-1:1:61:1:3 at corrupt location: 17494:20873455 | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,666 | INFO  | Detected missing/corrupt journal files.  Dropped 10 messages from the index in 0.289 seconds. | org.apache.activemq.store.kahadb.MessageDatabase | main
+2018-06-11 18:03:46,675 | INFO  | PListStore:[/data/log/activemq/localhost/tmp_storage] started | org.apache.activemq.store.kahadb.plist.PListStoreImpl | main
+2018-06-11 18:03:46,683 | INFO  | JobSchedulerStore: /data/log/activemq/localhost/scheduler started. | org.apache.activemq.store.kahadb.scheduler.JobSchedulerStoreImpl | main
+2018-06-11 18:03:48,193 | INFO  | Apache ActiveMQ 5.13.3 (localhost, ID:sh-o2o-pressure-java-online-01-15400-1528711426716-0:1) is starting | org.apache.activemq.broker.BrokerService | main
+```
+
+[参考:http://www.cnblogs.com/zhishan/archive/2013/04/01/2993334.html](http://www.cnblogs.com/zhishan/archive/2013/04/01/2993334.html "参考:http://www.cnblogs.com/zhishan/archive/2013/04/01/2993334.html")
