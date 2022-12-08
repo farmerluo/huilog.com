@@ -1,7 +1,7 @@
 ---
-title: Knative第二部分：Knative Serving主要功能研究
+title: Knative第二部分-Knative Serving主要功能研究
 author: 阿辉
-date: 2022-12-08T15:10:14+00:00
+date: 2022-12-08T15:10:14+08:00
 categories:
 - Serverless
 tags:

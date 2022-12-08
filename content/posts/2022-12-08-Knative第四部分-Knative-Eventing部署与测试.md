@@ -1,7 +1,7 @@
 ---
-title: Knative第四部分：Knative Eventing部署与测试
+title: Knative第四部分-Knative Eventing部署与测试
 author: 阿辉
-date: 2022-12-08T15:30:14+00:00
+date: 2022-12-08T15:30:14+08:00
 categories:
 - Serverless
 tags:
