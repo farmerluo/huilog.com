@@ -17,13 +17,13 @@ showMeta: true
 ---
 {{< toc >}}
 
-# 1. 问题现象
+# 1. kube proxy规则同步高延迟现象
 
 在一次重启coredns时，我们发现有些解析失败的现象，由此怀疑到可能是kube proxy更新ipvs或iptables规则慢导致的。
 
 查看kube proxy的监控图，也确实发现有偶尔非常慢的问题，如下图所示：
 
-![kubeproxy1](http://www.huilog.com/static/images/2022/kube-proxy1.png)
+![kubeproxy1](/static/images/2022/kube-proxy1.png)
 
 可以看到10.11.96.92这个节点显示规则同步的99线为16.4s。如果这个时间是真的，那肯定是不能接受的一个延迟时间。正常来说应该不应该超过1s。
 
@@ -357,7 +357,7 @@ func (proxier *Proxier) syncProxyRules() {
 	...
 ```
 
-# 3. 问题排查
+# 3. kube proxy规则同步高延迟初步排查
 
 从以前对ipvs这块的测试数据及使用经验来看，ipvs规则的更新通常是比较快的。
 
@@ -399,7 +399,7 @@ WantedBy=multi-user.target
 
 过了一段时间后，发现有两台节点显示有16s的延迟：
 
-![kubeproxy2](http://www.huilog.com/static/images/2022/kube-proxy2.png)
+![kubeproxy2](/static/images/2022/kube-proxy2.png)
 
 由上面的监控图可以发现:
 - 10.11.96.100这台节点在18:45到18:50延迟14s.
@@ -553,9 +553,9 @@ I1214 18:31:33.524141  634902 server_others.go:269] "Using ipvs Proxier"
 
 后面针对这几类延迟再一个一个进行分析排查。
 
-# 4. kube proxy规则同步高延迟分析
+# 4. kube proxy规则同步高延迟原因分析
 
-## 4.1 kube proxy启动时前2次规则同步的高延迟分析
+## 4.1 kube proxy启动时前2次规则同步的高延迟原因分析
 
 从10.11.96.100节点开始查，其前2次规则同步高延迟的时间为:
 
@@ -637,9 +637,9 @@ I1214 18:44:25.826332   98073 ipset.go:168] "Successfully deleted legacy ip set 
 
 需要注意的是这是因为重启kube proxy后的启动日志，因为是重启，所以节点上还存在旧的ip set规则，所以这里是在做ipset的清理工作，大约花费了13.3s左右。同步ipset的相关源码如下：
 
-![kubeproxy-code1](http://www.huilog.com/static/images/2022/kube-proxy-code1.png)
+![kubeproxy-code1](/static/images/2022/kube-proxy-code1.png)
 
-![kubeproxy-code2](http://www.huilog.com/static/images/2022/kube-proxy-code2.png)
+![kubeproxy-code2](/static/images/2022/kube-proxy-code2.png)
 
 同时通过分析kube proxy日志也可以发现，kube proxy 删除了2901条KUBE-CLUSTER-IP ipset，
 ```console
@@ -741,16 +741,16 @@ func (proxier *Proxier) syncProxyRules() {
     ...
 ```
 - `proxier.serviceMap.Update(proxier.serviceChanges)`调用的是service.go内的Update，Update关键的代码是`sm.apply(changes, result.UDPStaleClusterIP)`，将变动的service信息合并到serviceMap内
-![kubeproxy-code3](http://www.huilog.com/static/images/2022/kube-proxy3.png)
+![kubeproxy-code3](/static/images/2022/kube-proxy3.png)
 
 - sm.apply通过遍历变动的service，通过sm.merge及sm.umerge将更新的service信息同步到serviceMap内
-![kubeproxy-code4](http://www.huilog.com/static/images/2022/kube-proxy4.png)
+![kubeproxy-code4](/static/images/2022/kube-proxy4.png)
 
 - sm.merge将变动的service更新到serviceMap内，并打印了相关的日志信息
-![kubeproxy-code5](http://www.huilog.com/static/images/2022/kube-proxy5.png)
+![kubeproxy-code5](/static/images/2022/kube-proxy5.png)
 
 - sm.umerge将删除的service从serviceMap内删除
-![kubeproxy-code6](http://www.huilog.com/static/images/2022/kube-proxy6.png)
+![kubeproxy-code6](/static/images/2022/kube-proxy6.png)
 
 在kube proxy日志内过滤sm.merge内打印的`Adding new service port`信息，发现总共只有1636条，说明只有1636条service被增加到了serviceMap内：
 
@@ -843,7 +843,7 @@ I1214 18:44:27.546783   98073 service.go:419] "Adding new service port" portName
 ```
 `I1214 18:44:27.546625   98073 proxier.go:1032] "Syncing ipvs proxier rules"`后面紧接着来了一条`iptables.go:357] running ip6tables-save [-t filter]`，说明这是IPV6 proxier的goroutine。
 
-## 4.2 kube proxy运行时同步规则延迟高分析
+## 4.2 kube proxy运行时同步规则延迟高原因分析
 先看10.11.96.100这台：
 ```console
 I1219 19:00:12.625572  455291 proxier.go:1008] "syncProxyRules complete" elapsed="1.00417046s"
@@ -887,7 +887,7 @@ I1219 19:00:12.573243  455291 proxier.go:1620] "Network programming" endpoint="p
 I1219 19:00:12.625572  455291 proxier.go:1008] "syncProxyRules complete" elapsed="1.00417046s"
 ```
 发现主要是在"Port was open before and is still needed"时稍慢，看看节点当时的资源使用情况：
-![kubeproxy-code7](http://www.huilog.com/static/images/2022/kube-proxy7.png)
+![kubeproxy-code7](/static/images/2022/kube-proxy7.png)
 当时CPU资源基本用完了，初步判断可能是节点负载高导致的。
 
 再看另一台节点10.11.96.98：
@@ -906,7 +906,7 @@ I1216 16:05:06.535796  250794 proxier.go:1008] "syncProxyRules complete" elapsed
 I1219 15:06:22.626687  250794 proxier.go:1008] "syncProxyRules complete" elapsed="1.131007056s"
 ```
 这台延迟高的频率多一些，我们看下15至16号的资源使用情况：
-![kubeproxy-code8](http://www.huilog.com/static/images/2022/kube-proxy8.png)
+![kubeproxy-code8](/static/images/2022/kube-proxy8.png)
 看起来CPU资源虽然偏高，但并没有用尽，不像是节点负载高导致的。
 
 再看看kube proxy的日志：
@@ -955,7 +955,7 @@ kube proxy的规则同步平均延迟为500ms左右，目前发现的高延迟�
 
 10.11.96.111这台节点监控显示在19:06延迟为16s：
 
-![kubeproxy2](http://www.huilog.com/static/images/2022/kube-proxy2.png)
+![kubeproxy2](/static/images/2022/kube-proxy2.png)
 
 监控图的PromSQL如下：
 `histogram_quantile(0.99,rate(kubeproxy_sync_proxy_rules_duration_seconds_bucket{job="kube-proxy", instance=~"$instance"}[5m]))`
@@ -982,7 +982,7 @@ I1214 19:06:57.251040  614210 proxier.go:1008] "syncProxyRules complete" elapsed
 
 
 histogram类型的指标还有Summary可以查询准确的平均时间：
-![kubeproxy12](http://www.huilog.com/static/images/2022/kube-proxy12.png)
+![kubeproxy12](/static/images/2022/kube-proxy12.png)
 可以看到这段时间的平均延迟为340ms左右。
 监控图的PromSQL如下：
 `kubeproxy_sync_proxy_rules_duration_seconds_sum{job="kube-proxy", instance=~"$instance"} / kubeproxy_sync_proxy_rules_duration_seconds_count{job="kube-proxy", instance=~"$instance"}`
@@ -991,11 +991,11 @@ histogram类型的指标还有Summary可以查询准确的平均时间：
 不管是从日志还是Summary的监控数据都说明，kubeproxy_sync_proxy_rules_duration_seconds_bucket这个指标的数据是有问题的。
 
 仔细查询19:06左右的监控数据，下面是19:05:30的:
-![kubeproxy11](http://www.huilog.com/static/images/2022/kube-proxy11.png)
+![kubeproxy11](/static/images/2022/kube-proxy11.png)
 19:06:00:
-![kubeproxy9](http://www.huilog.com/static/images/2022/kube-proxy9.png)
+![kubeproxy9](/static/images/2022/kube-proxy9.png)
 19:06:30:
-![kubeproxy10](http://www.huilog.com/static/images/2022/kube-proxy10.png)
+![kubeproxy10](/static/images/2022/kube-proxy10.png)
 根据histogram类型的指标规则,更大的桶的数据是比其更小的桶的数据的累加，而19:06:00的数据le=8.12及其后面的指标数据比更小的桶的数据还更小。确实是kubeproxy_sync_proxy_rules_duration_seconds_bucket指标的数据有问题，属于监控数据错误。
 
 至于为什么监控数据会有问题，这是另一个问题了，另找时间排查promethues监控系统。
